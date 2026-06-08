@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>水果攤大探險 ・ 互動教案</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap');
+:root{--sky1:#fff3d6;--sky2:#ffd9a0;--grass:#9dd17a;--wood:#b5703c;--wood-d:#8a4f24;--awning:#e8463c;--awning2:#fff4ec;--ink:#4a2c12;--cream:#fffaf0;--leaf:#5aa642;--sun:#ffc23c;--pink:#ff7e9d;--teal:#23a6a0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Baloo 2","PingFang TC","Microsoft JhengHei",cursive,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;background:radial-gradient(circle at 80% 12%,#fff7c2 0%,transparent 40%),radial-gradient(circle at 15% 8%,#ffe9b0 0%,transparent 35%),linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 55%,var(--grass) 55%,#b6dd8e 100%)}
+.cloud{position:fixed;background:#fff;border-radius:50px;opacity:.85;z-index:0;filter:drop-shadow(0 6px 0 rgba(0,0,0,.04))}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.c1{width:120px;height:36px;top:8%;left:-160px;animation:drift 38s linear infinite}
+.c1::before{width:54px;height:54px;top:-26px;left:18px}.c1::after{width:42px;height:42px;top:-18px;left:62px}
+.c2{width:90px;height:28px;top:18%;left:-160px;animation:drift 52s linear infinite;animation-delay:-10s}
+.c2::before{width:40px;height:40px;top:-20px;left:14px}.c2::after{width:32px;height:32px;top:-12px;left:48px}
+@keyframes drift{to{transform:translateX(calc(100vw + 260px))}}
+header{position:relative;z-index:2;text-align:center;padding:26px 16px 4px}
+header h1{font-size:clamp(28px,6vw,52px);font-weight:800;color:#fff;text-shadow:0 3px 0 var(--awning),0 6px 0 var(--wood-d),0 9px 12px rgba(0,0,0,.2);letter-spacing:2px}
+header h1 .em{display:inline-block;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-6deg)}}
+header p{margin-top:10px;color:var(--wood-d);font-weight:600;font-size:clamp(14px,2.4vw,17px)}
+.score{display:inline-flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center}
+.score .chip{background:#fff;border:3px solid var(--wood);border-radius:30px;padding:7px 18px;font-weight:700;box-shadow:0 4px 0 var(--wood-d);font-size:15px}
+.score .chip b{color:var(--awning)}
+.toolbar{position:relative;z-index:2;max-width:980px;margin:14px auto 0;padding:0 14px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.toolbar button{border:3px solid var(--wood);background:#fff;border-radius:30px;padding:6px 16px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink);box-shadow:0 3px 0 var(--wood-d);transition:.15s}
+.toolbar button.on{background:var(--leaf);color:#fff;border-color:#3f7a30}
+.toolbar button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--wood-d)}
+.stage{position:relative;z-index:2;max-width:980px;margin:14px auto 70px;padding:0 14px}
+.stall{position:relative;background:linear-gradient(180deg,#d8853f,#b5703c);border:6px solid var(--wood-d);border-radius:22px;padding:0 0 26px;box-shadow:0 16px 40px rgba(110,60,20,.35);overflow:hidden}
+.awning{display:flex;height:54px;border-radius:14px 14px 0 0;overflow:hidden;box-shadow:0 4px 0 rgba(0,0,0,.12)}
+.awning span{flex:1}.awning span:nth-child(odd){background:var(--awning)}.awning span:nth-child(even){background:var(--awning2)}
+.awning-edge{display:flex;height:26px;margin-bottom:6px}
+.awning-edge span{flex:1;height:0;border-left:calc(min(8vw,38px)/2) solid transparent;border-right:calc(min(8vw,38px)/2) solid transparent;border-top:26px solid var(--awning)}
+.awning-edge span:nth-child(even){border-top-color:var(--awning2)}
+.sign{position:absolute;top:64px;left:50%;transform:translateX(-50%) rotate(-2deg);background:#fff;border:4px solid var(--wood-d);border-radius:12px;padding:5px 22px;font-weight:800;color:var(--awning);box-shadow:0 5px 0 var(--wood-d);z-index:3;font-size:clamp(15px,3vw,20px);white-space:nowrap}
+.shelf{margin-top:70px;padding:18px 16px 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:14px}
+.fruit{position:relative;background:linear-gradient(180deg,#fffdf6,#fff0d8);border:4px solid #fff;border-radius:18px;padding:12px 6px 10px;text-align:center;cursor:pointer;box-shadow:0 6px 0 var(--wood-d);transition:transform .15s,box-shadow .15s;outline:none}
+.fruit:hover,.fruit:focus-visible{transform:translateY(-6px) rotate(-2deg);box-shadow:0 12px 0 var(--wood-d);z-index:2}
+.fruit:active{transform:translateY(2px);box-shadow:0 3px 0 var(--wood-d)}
+.fruit .pic{width:100%;height:72px;display:flex;align-items:center;justify-content:center;position:relative}
+.fruit .pic img{width:62px;height:62px;object-fit:contain;filter:drop-shadow(0 4px 4px rgba(0,0,0,.18));animation:sway 3s ease-in-out infinite}
+.fruit .pic .emoji{font-size:50px;line-height:1;filter:drop-shadow(0 3px 3px rgba(0,0,0,.15));animation:sway 3s ease-in-out infinite}
+@keyframes sway{50%{transform:translateY(-4px) rotate(3deg)}}
+.fruit .nm{display:block;margin-top:6px;font-weight:700;font-size:14px}
+.fruit .cat{display:inline-block;margin-top:3px;font-size:10px;padding:1px 8px;border-radius:20px;background:#ffe6b8;color:var(--wood-d);font-weight:700}
+.fruit.done{background:linear-gradient(180deg,#e8f7d8,#d2efb6)}
+.fruit .badge{position:absolute;top:-10px;right:-8px;width:30px;height:30px;background:var(--leaf);color:#fff;border:3px solid #fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:15px;box-shadow:0 3px 6px rgba(0,0,0,.2);transform:rotate(8deg);z-index:3}
+.fruit.done .badge{display:flex;animation:pop .4s cubic-bezier(.2,1.4,.5,1)}
+.fruit.hide{display:none}
+@keyframes pop{from{transform:scale(0) rotate(8deg)}to{transform:scale(1) rotate(8deg)}}
+.plank{height:14px;background:linear-gradient(180deg,#c98a4c,#9c5e2c);border-radius:6px;margin:10px 16px 0;box-shadow:0 4px 0 rgba(0,0,0,.12)}
+.hint{text-align:center;margin-top:16px;color:var(--wood-d);font-weight:600;font-size:15px}
+.hint .wig{display:inline-block;animation:bob 1.8s ease-in-out infinite}
+.overlay{position:fixed;inset:0;background:rgba(60,30,10,.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50;padding:14px}
+.overlay.show{display:flex;animation:fade .25s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{background:var(--cream);border:6px solid var(--wood);border-radius:26px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.4);animation:rise .35s cubic-bezier(.2,1.3,.5,1)}
+@keyframes rise{from{transform:scale(.85) translateY(30px);opacity:0}to{transform:scale(1);opacity:1}}
+.mhead{position:sticky;top:0;background:linear-gradient(120deg,var(--awning),#ff6b5c);color:#fff;padding:16px 22px;display:flex;align-items:center;gap:14px;z-index:2}
+.mhead .big{width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:42px;line-height:1;filter:drop-shadow(0 3px 2px rgba(0,0,0,.2))}
+.mhead .big img{width:48px;height:48px;object-fit:contain}
+.mhead h2{font-size:25px;font-weight:800;flex:1}
+.mhead .close{cursor:pointer;background:rgba(255,255,255,.25);border:none;color:#fff;width:38px;height:38px;border-radius:50%;font-size:24px;line-height:1;transition:.2s}
+.mhead .close:hover{background:rgba(255,255,255,.45);transform:rotate(90deg)}
+.mbody{padding:20px 22px 26px}
+.section-tab{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.section-tab button{flex:1;min-width:90px;border:3px solid var(--wood);background:#fff;border-radius:14px;padding:9px 6px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;color:var(--ink);box-shadow:0 4px 0 var(--wood-d);transition:.15s}
+.section-tab button.on{background:var(--sun);transform:translateY(2px);box-shadow:0 2px 0 var(--wood-d)}
+.panel{display:none;animation:fade .25s}.panel.on{display:block}
+.gallery{position:relative;width:100%;height:210px;border-radius:16px;overflow:hidden;margin-bottom:10px;background:linear-gradient(135deg,#ffe6b8,#ffd089);display:flex;align-items:center;justify-content:center}
+.gallery img{width:100%;height:100%;object-fit:cover;cursor:pointer;position:absolute;inset:0;opacity:0;transition:opacity .4s}
+.gallery img.on{opacity:1}
+.gallery .emoji{font-size:78px}
+.gallery.loading::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);animation:sh 1.1s infinite}
+@keyframes sh{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.gallery .nav{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border:none;background:rgba(255,255,255,.85);border-radius:50%;font-size:20px;font-weight:800;color:var(--ink);cursor:pointer;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.25);display:none}
+.gallery .nav:hover{background:#fff}
+.gallery .prev{left:8px}.gallery .next{right:8px}
+.gallery .dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2}
+.gallery .dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.6);transition:.2s}
+.gallery .dots i.on{background:#fff;width:18px;border-radius:5px}
+.videoBox{width:100%;border-radius:16px;overflow:hidden;margin-bottom:10px;background:linear-gradient(135deg,#ffe6b8,#ffd089);min-height:200px;display:flex;align-items:center;justify-content:center;position:relative;flex-direction:column;gap:14px;padding:18px}
+.videoBox video{width:100%;border-radius:12px;background:#000;max-height:300px}
+.videoBox.loading::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);animation:sh 1.1s infinite}
+.videoBox .noVid{text-align:center;color:var(--wood-d);font-weight:600}
+.videoBox .noVid .vemoji{font-size:60px;display:block;margin-bottom:8px}
+.searchBtn{display:inline-flex;align-items:center;gap:8px;border:none;background:#ff0000;color:#fff;font-family:inherit;font-weight:800;font-size:16px;padding:13px 24px;border-radius:30px;cursor:pointer;box-shadow:0 5px 0 #b30000;text-decoration:none;transition:.15s}
+.searchBtn:active{transform:translateY(3px);box-shadow:0 2px 0 #b30000}
+.searchBtn.g{background:#4285f4;box-shadow:0 5px 0 #2a5db0}
+.picsrc{text-align:center;font-size:12px;color:var(--wood-d);margin:0 0 12px}
+.picsrc a{color:var(--teal);font-weight:700;text-decoration:none}
+.intro p{font-size:15.5px;line-height:1.85;margin-bottom:10px}
+.facts li{list-style:none;background:#fff;border:3px dashed var(--teal);border-radius:14px;padding:12px 14px;margin-bottom:11px;font-size:15px;line-height:1.7;position:relative}
+.facts li .tag{display:inline-block;background:var(--teal);color:#fff;font-weight:700;font-size:12px;padding:2px 10px;border-radius:20px;margin-right:8px}
+.q{font-size:18px;font-weight:700;margin-bottom:6px;line-height:1.6}
+.qmeta{font-size:13px;color:var(--wood-d);margin-bottom:14px;font-weight:600}
+.opts{display:grid;gap:10px}
+.opts button{display:flex;align-items:center;gap:10px;text-align:left;border:3px solid var(--wood);background:#fff;border-radius:16px;padding:13px 16px;font-family:inherit;font-size:15.5px;font-weight:600;cursor:pointer;color:var(--ink);box-shadow:0 4px 0 var(--wood-d);transition:.13s}
+.opts button:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 7px 0 var(--wood-d)}
+.opts button:disabled{cursor:default}
+.opts button .k{width:28px;height:28px;flex-shrink:0;background:var(--sun);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.opts button.correct{background:#d5f3c0;border-color:var(--leaf)}.opts button.correct .k{background:var(--leaf);color:#fff}
+.opts button.wrong{background:#ffd9d4;border-color:var(--awning)}.opts button.wrong .k{background:var(--awning);color:#fff}
+.opts button.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.feedback{margin-top:16px;border-radius:16px;padding:14px 16px;font-size:15px;line-height:1.7;display:none}
+.feedback.show{display:block;animation:rise .3s}
+.feedback.ok{background:#e3f7d0;border:3px solid var(--leaf)}.feedback.no{background:#fff0ec;border:3px solid var(--awning)}
+.feedback b{font-size:16px}
+.nextbtn{margin-top:14px;width:100%;border:none;background:var(--leaf);color:#fff;font-family:inherit;font-weight:800;font-size:17px;padding:13px;border-radius:16px;cursor:pointer;box-shadow:0 5px 0 #3f7a30;display:none}
+.nextbtn.show{display:block}.nextbtn:active{transform:translateY(3px);box-shadow:0 2px 0 #3f7a30}
+.retrybtn{margin-top:10px;width:100%;border:none;background:var(--sun);color:var(--ink);font-family:inherit;font-weight:800;font-size:15px;padding:11px;border-radius:14px;cursor:pointer;box-shadow:0 4px 0 var(--wood-d);display:none}
+.retrybtn.show{display:block}
+.win{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(60,30,10,.6);padding:16px}
+.win.show{display:flex}
+.win .card{background:var(--cream);border:6px solid var(--sun);border-radius:26px;padding:34px 28px;text-align:center;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,.4);animation:rise .4s}
+.win .card .trophy{font-size:72px;animation:bob 1.4s ease-in-out infinite}
+.win .card h2{font-size:28px;margin:10px 0;color:var(--awning)}
+.win .card p{font-size:16px;line-height:1.7;color:var(--ink)}
+.win .card button{margin-top:18px;border:none;background:var(--awning);color:#fff;font-family:inherit;font-weight:800;font-size:16px;padding:12px 28px;border-radius:16px;cursor:pointer;box-shadow:0 5px 0 var(--wood-d)}
+.confetti{position:fixed;top:-20px;width:12px;height:12px;z-index:61;pointer-events:none}
+footer{position:relative;z-index:2;text-align:center;color:var(--wood-d);font-size:13px;font-weight:600;padding:10px 16px 26px}
+</style>
+</head>
+<body>
+<div class="cloud c1"></div><div class="cloud c2"></div>
+<header>
+  <h1><span class="em">🍉</span> 水果攤大探險 <span class="em">🍓</span></h1>
+  <p>歡迎光臨！點點看攤子上的水果，闖過問答、認識水果，還有意想不到的冷知識喔～</p>
+  <div class="score">
+    <span class="chip">已探索 <b id="exp">0</b> / <span id="tot">0</span> 種</span>
+    <span class="chip">答對 <b id="right">0</b> 題</span>
+  </div>
+</header>
+<div class="toolbar" id="filterBar">
+  <button data-cat="all" class="on">全部</button>
+  <button data-cat="本土">🇹🇼 本土</button>
+  <button data-cat="進口">✈️ 常進口</button>
+  <button data-cat="熱帶">🌴 熱帶</button>
+  <button data-cat="柑橘">🍊 柑橘類</button>
+</div>
+<div class="stage">
+  <div class="stall">
+    <div class="awning" id="awn"></div>
+    <div class="awning-edge" id="awnEdge"></div>
+    <div class="sign">🛒 今日新鮮直送 🛒</div>
+    <div class="shelf"><div class="grid" id="grid"></div></div>
+    <div class="plank"></div>
+  </div>
+  <p class="hint"><span class="wig">👇</span> 點任一顆水果開始探險 <span class="wig">👇</span></p>
+</div>
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="mhead">
+      <span class="big" id="mIco"></span>
+      <h2 id="mName">水果</h2>
+      <button class="close" id="closeBtn">×</button>
+    </div>
+    <div class="mbody">
+      <div class="section-tab">
+        <button data-p="quiz" class="on">🎯 闖關問答</button>
+        <button data-p="intro">📷 照片</button>
+        <button data-p="video">🎬 影片</button>
+        <button data-p="fact">💡 冷知識</button>
+      </div>
+      <div class="panel quiz on" id="pQuiz">
+        <p class="q" id="qText"></p>
+        <p class="qmeta">選出正確答案，看看你猜對了沒！</p>
+        <div class="opts" id="qOpts"></div>
+        <div class="feedback" id="qFb"></div>
+        <button class="retrybtn" id="retryBtn">🔄 再試一次</button>
+        <button class="nextbtn" id="goIntro">看牠的真實照片 →</button>
+      </div>
+      <div class="panel intro" id="pIntro">
+        <div class="gallery" id="gallery">
+          <button class="nav prev" id="gPrev">‹</button>
+          <button class="nav next" id="gNext">›</button>
+          <div class="dots" id="gDots"></div>
+        </div>
+        <p class="picsrc" id="picSrc"></p>
+        <div class="intro" id="introBody"></div>
+        <button class="nextbtn show" id="goVideo" style="background:var(--teal);box-shadow:0 5px 0 #176f6a">看影片 →</button>
+      </div>
+      <div class="panel video" id="pVideo">
+        <div class="videoBox" id="videoBox"></div>
+        <p class="picsrc" id="vidSrc"></p>
+        <button class="nextbtn show" id="goFact2" style="background:var(--teal);box-shadow:0 5px 0 #176f6a">看趣味冷知識 →</button>
+      </div>
+      <div class="panel fact" id="pFact"><ul class="facts" id="factBody"></ul></div>
+    </div>
+  </div>
+</div>
+<div class="win" id="win">
+  <div class="card">
+    <div class="trophy">🏆</div>
+    <h2>太厲害了！</h2>
+    <p id="winMsg"></p>
+    <button id="winClose">再逛一次水果攤</button>
+  </div>
+</div>
+<footer>水果攤大探險 ・ icon：Iconify(twemoji) ・ 照片：維基百科 (CC) ・ 教學娛樂用途</footer>
+<script>
+// icon = Iconify twemoji 圖示名；wiki = 維基條目；cats = 分類
+const FRUITS=[
+{ico:"🍎",icon:"twemoji:red-apple",name:"蘋果",wiki:"苹果",cats:["進口"],color:"#e8463c",intro:"蘋果是薔薇科的水果，原產於中亞，現在全世界都有種植。它的果皮有紅、綠、黃等不同顏色，果肉清脆多汁，富含膳食纖維與維生素。把切開的蘋果泡一下鹽水或檸檬水，就能減緩它變褐色。",q:"切開的蘋果放久了會變成褐色，主要是因為什麼？",opts:["果肉接觸空氣後氧化","蘋果裡有色素跑出來","被光照到曬黑了"],ans:0,why:"蘋果切面接觸空氣後，裡面的酵素會和氧氣作用產生褐色物質，這叫『酵素褐變』。",facts:["全世界的蘋果品種超過 7,500 種，常見的就有富士、五爪、青蘋果等。","蘋果有大約四分之一是『空氣』，所以能浮在水面上，這也是『咬蘋果』遊戲能玩的原因。"]},
+{ico:"🍌",icon:"twemoji:banana",name:"香蕉",wiki:"香蕉",cats:["本土","熱帶"],color:"#ffc23c",intro:"香蕉是熱帶水果，台灣的香蕉曾大量外銷日本，有『香蕉王國』的稱號。它含有豐富的鉀離子和能快速補充能量的醣類。香蕉是『後熟水果』，採收時還是綠色，放幾天就會慢慢變黃變甜。",q:"關於香蕉這種植物，下列哪一個說法是正確的？",opts:["香蕉長在高大的木本樹幹上","香蕉串是朝下垂吊生長的","香蕉是大型的草本植物"],ans:2,why:"香蕉其實不是樹！它是世界上最大的『草本植物』之一，我們看到的『樹幹』是葉鞘層層包成的假莖。",facts:["香蕉看似樹幹的部分其實是假莖，真正的莖藏在地底下。","香蕉果實是朝上生長、追著陽光長，所以才會有彎彎的弧度。"]},
+{ico:"🍉",icon:"twemoji:watermelon",name:"西瓜",wiki:"西瓜",cats:["本土"],color:"#46b35e",intro:"西瓜是夏天最消暑的水果，超過 9 成都是水分。它原產於非洲，果肉有紅色也有黃色。挑西瓜時可以輕拍聽聲音，清脆的『咚咚』聲通常代表又甜又熟。",q:"西瓜大約有多少比例是水分？",opts:["約一半（50%）","超過九成（90%以上）","只有三成（30%）"],ans:1,why:"西瓜含水量超過 90%，夏天吃最能補水消暑。",facts:["日本農民曾用模具種出『方形西瓜』，方便堆疊和切片。","西瓜和小黃瓜、南瓜是親戚，都屬於葫蘆科。"]},
+{ico:"🍓",icon:"twemoji:strawberry",name:"草莓",wiki:"草莓",cats:["本土"],color:"#ff5a7d",intro:"草莓酸酸甜甜，是冬天到春天的當季水果，台灣苗栗大湖是有名的草莓產地。它紅紅的外表上佈滿一粒粒小點點，富含維生素 C。草莓很怕碰撞和潮濕，最好吃之前再洗。",q:"草莓表面那一粒一粒的小點點，其實是什麼？",opts:["草莓的種子","草莓的毛細孔","裝飾用的糖粒"],ans:0,why:"那些小點點才是草莓真正的果實與種子，我們吃的紅色部分其實是膨大的花托。",facts:["草莓在植物學上不算『真正的莓果』，反而香蕉、奇異果在分類上更接近莓果。","一顆草莓表面平均有大約 200 顆種子。"]},
+{ico:"🍇",icon:"twemoji:grapes",name:"葡萄",wiki:"葡萄",cats:["本土"],color:"#8e5fd0",intro:"葡萄一串串掛在藤蔓上，有紫色、綠色、紅色等品種。它可以直接吃，也能做成葡萄乾、果汁和葡萄酒。台灣彰化、台中是重要產地。",q:"葡萄皮上那層白白的粉是什麼？",opts:["沒洗乾淨的灰塵","天然形成的果粉（果霜）","噴上去的糖粉"],ans:1,why:"那層白粉叫『果粉』，是葡萄自己分泌出來保護果實、減少水分流失的，有它通常代表很新鮮。",facts:["大約 4 公斤的新鮮葡萄才能曬出 1 公斤葡萄乾。","葡萄的形狀和含水量剛好會在微波爐中聚集能量產生火花（請勿在家嘗試）。"]},
+{ico:"🍊",icon:"twemoji:tangerine",name:"橘子",wiki:"柑橘",cats:["本土","柑橘"],color:"#ff9f1c",intro:"橘子是冬天的代表水果，過年時常見它的身影，象徵『大吉大利』。果皮容易剝開，果肉酸甜多汁，含有豐富的維生素 C。橘子皮曬乾後就是中藥裡的『陳皮』。",q:"曬乾的橘子皮在中藥裡有一個名字，叫做什麼？",opts:["陳皮","桂皮","龍眼乾"],ans:0,why:"橘子皮曬乾、放久後就成了『陳皮』，常用來泡茶、煮湯或入藥，越陳越香。",facts:["橘子和柳橙、檸檬、柚子都屬於『柑橘家族』，彼此還能雜交出新品種。","橘子皮含有油脂，用力擠壓噴出的汁液靠近火會產生小火花。"]},
+{ico:"🍍",icon:"twemoji:pineapple",name:"鳳梨",wiki:"鳳梨",cats:["本土","熱帶"],color:"#f4b400",intro:"鳳梨有堅硬帶刺的外皮和綠色的葉冠，是台灣很重要的水果，鳳梨酥更是知名伴手禮。它含有『鳳梨酵素』，能幫助分解蛋白質，吃太多嘴巴會刺刺的就是這個關係。",q:"吃鳳梨時嘴巴會覺得刺刺、咬咬的，是因為它含有什麼？",opts:["很多糖分","鳳梨酵素（蛋白酶）","小小的刺"],ans:1,why:"鳳梨含有『鳳梨酵素』，會分解口腔黏膜的蛋白質，泡點鹽水可以減緩。",facts:["鳳梨是由很多小花一起合併長成的『聚合果』。","鳳梨頂端的綠葉切下來插進土裡，照顧得當還能長出新的鳳梨。"]},
+{ico:"🥝",icon:"twemoji:kiwi-fruit",name:"奇異果",wiki:"奇异果",cats:["進口"],color:"#8cc63f",intro:"奇異果毛茸茸的外皮裡藏著翠綠或金黃的果肉，點綴著一圈黑色小籽，維生素 C 含量非常高。它原本來自中國，被稱為『獼猴桃』，後來在紐西蘭發揚光大並改了名字。",q:"奇異果（Kiwifruit）這個名字，和紐西蘭的什麼有關？",opts:["一條河流","一種不會飛的鳥","一座山"],ans:1,why:"奇異果毛茸茸的樣子很像紐西蘭的國鳥『奇異鳥（Kiwi）』，因此得名。它的原產地其實是中國。",facts:["奇異果原產於中國，舊名叫『獼猴桃』，到紐西蘭後才改名行銷全世界。","金黃色奇異果的維生素 C 含量比柳橙還高出許多。"]},
+{ico:"🍑",icon:"twemoji:peach",name:"水蜜桃",wiki:"桃",cats:["本土"],color:"#ff8e72",intro:"水蜜桃果皮帶著細細的絨毛，果肉柔軟香甜、汁水豐富，是夏天的高級水果。台灣的拉拉山、梨山產的水蜜桃很有名。在中華文化裡，桃子也常象徵長壽。",q:"在中華傳統文化裡，桃子常用來象徵什麼？",opts:["長壽","財富","勇氣"],ans:0,why:"桃子在傳統文化中象徵『長壽』，所以祝壽時常會看到『壽桃』這種點心。",facts:["桃子和梅子、李子、櫻桃都是親戚，都屬於薔薇科的『核果類』。","桃子的絨毛是用來保護果實、減少水分蒸發和蟲害的天然外衣。"]},
+{ico:"🍋",icon:"twemoji:lemon",name:"檸檬",wiki:"柠檬",cats:["本土","柑橘"],color:"#f7d046",intro:"檸檬非常酸，很少人直接咬著吃，但它是料理和飲料的好幫手，加幾滴就能去腥提味。它含有豐富的維生素 C 和檸檬酸，淋在切開的蘋果上還能防止變黑。",q:"為什麼檸檬吃起來這麼酸？",opts:["含有大量檸檬酸","糖分太少了","它還沒成熟"],ans:0,why:"檸檬含有大量的『檸檬酸』，這就是它酸味的來源。",facts:["同重量下，芭樂、奇異果的維生素 C 其實比檸檬還高。","古代航海時代，水手會帶柑橘類水果預防缺乏維生素 C 造成的『壞血病』。"]},
+{ico:"🥭",icon:"twemoji:mango",name:"芒果",wiki:"芒果",cats:["本土","熱帶"],color:"#f9a826",intro:"芒果是夏天的熱帶水果之王，台灣台南、屏東盛產，愛文、金煌都是有名的品種。芒果和漆樹是親戚，少數人吃了或碰到果皮會過敏發癢，要特別留意。",q:"芒果在植物分類上，和下列哪一種植物是親戚？",opts:["漆樹（所以少數人會過敏）","仙人掌","竹子"],ans:0,why:"芒果屬於漆樹科，和會讓人皮膚過敏的漆樹是親戚，所以少數人會對芒果過敏。",facts:["芒果在印度已經種植超過 4,000 年，是栽培歷史最悠久的水果之一。","把整顆芒果核種下去，照顧得當真的能長出芒果樹苗。"]},
+{ico:"🥥",icon:"twemoji:coconut",name:"椰子",wiki:"椰子",cats:["熱帶"],color:"#9c6b3f",intro:"椰子生長在熱帶海邊的椰子樹上，有厚厚的外殼，裡面裝著清涼的椰子水和白色的椰肉。椰子非常輕，能浮在海上漂流到很遠的地方再發芽生長。",q:"椰子能傳播到很遠的海島生長，主要靠的是什麼？",opts:["被鳥吃掉帶走","隨著海水漂流","風把它吹走"],ans:1,why:"椰子外殼有纖維、內部有空氣，能浮在海面隨洋流漂流到很遠的海岸再發芽。",facts:["椰子的『眼睛』有三個小孔，嫩芽就是從其中一個孔長出來的。","新鮮椰子水非常乾淨，曾在資源不足時被研究作為緊急補充體液之用。"]},
+{ico:"🍐",icon:"twemoji:pear",name:"梨子",wiki:"梨",cats:["本土"],color:"#c3d645",intro:"梨子果肉雪白多汁、口感爽脆，台灣中部高山產的高接梨很有名。梨子水分多、甜度高，傳統上也常用來燉冰糖水潤喉。",q:"梨子和下列哪一種水果是同一科的親戚？",opts:["蘋果","香蕉","葡萄"],ans:0,why:"梨子和蘋果都屬於薔薇科，外型、口感和構造都很相似。",facts:["梨肉裡有顆粒感，是因為含有『石細胞』這種特殊的厚壁細胞。","台灣的『高接梨』是把高山梨的花芽嫁接到低海拔梨樹上栽培出來的。"]},
+{ico:"🍒",icon:"twemoji:cherries",name:"櫻桃",wiki:"櫻桃",cats:["進口"],color:"#d83b4a",intro:"櫻桃小巧圓潤、紅得發亮，酸甜可口，常見於初夏。它富含花青素，是高經濟價值的水果，常進口自美國、智利等地。",q:"關於櫻桃和我們賞花的『櫻花』，下列何者正確？",opts:["完全沒有關係","都屬於同一個家族（薔薇科李屬）","櫻桃是櫻花的果實，所有櫻花都能結"],ans:1,why:"櫻桃樹和觀賞用櫻花都屬薔薇科李屬，是近親；但多數觀賞櫻花並不會結出我們吃的甜櫻桃。",facts:["櫻桃是核果，中間有一顆硬核，和桃子、李子是親戚。","櫻桃的梗很長，是為了讓果實掛在枝頭通風、不易腐爛。"]},
+{ico:"🫐",icon:"twemoji:blueberries",name:"藍莓",wiki:"藍莓",cats:["進口"],color:"#4a6fd0",intro:"藍莓是藍紫色的小漿果，酸甜帶香氣，含有豐富的花青素而被視為健康水果。它原產於北美洲，常做成果醬、優格配料或烘焙點心。",q:"藍莓呈現藍紫色，主要是因為含有什麼成分？",opts:["花青素","葉綠素","胡蘿蔔素"],ans:0,why:"藍莓的藍紫色來自『花青素』，這也是它被認為對健康有益的成分之一。",facts:["藍莓表面常有一層白霧，是天然果粉，代表新鮮。","野生藍莓的果實通常比人工栽培的更小、香氣更濃。"]},
+{ico:"🍈",icon:"twemoji:melon",name:"哈密瓜",wiki:"哈密瓜",cats:["本土"],color:"#b6d36b",intro:"哈密瓜表皮有網狀紋路，果肉橙黃或淡綠，香氣濃郁、甜度高。它屬於甜瓜的一種，原本因新疆哈密地區出產而得名。",q:"哈密瓜表皮那一層網狀的紋路是怎麼形成的？",opts:["人工刻上去的","果實長大時表皮裂開又癒合的痕跡","被網子壓出來的"],ans:1,why:"哈密瓜長大時果肉撐裂表皮，裂縫癒合後就形成了網狀紋路，紋路越密通常代表越成熟。",facts:["哈密瓜和西瓜、小黃瓜都屬於葫蘆科。","哈密瓜的甜味主要集中在靠近瓜瓤（籽）的中心部位。"]},
+{ico:"🥭",icon:"twemoji:mango",name:"木瓜",wiki:"番木瓜",cats:["本土","熱帶"],color:"#f5923e",intro:"木瓜果肉橙黃柔軟、味道香甜，台灣四季都吃得到，木瓜牛奶是經典飲品。未熟的青木瓜則常拿來涼拌或入菜。木瓜含有能分解蛋白質的木瓜酵素。",q:"還沒成熟的青木瓜，在料理上常被拿來做什麼？",opts:["打成甜的果汁","切絲涼拌或入菜","直接曬成果乾"],ans:1,why:"青木瓜口感爽脆、味道清淡，東南亞常拿來做涼拌青木瓜絲等鹹味料理。",facts:["木瓜含有『木瓜酵素』，能分解蛋白質，常用於肉類嫩化。","木瓜的種子是黑色一粒粒的，帶有微微的辛辣味。"]},
+{ico:"🍒",icon:"twemoji:cherries",name:"荔枝",wiki:"荔枝",cats:["本土","熱帶"],color:"#d94f5c",intro:"荔枝外皮粗糙帶刺、呈紅色，剝開後是晶瑩半透明的白色果肉，香甜多汁，是夏季限定的水果。古代楊貴妃愛吃荔枝的故事很有名。",q:"關於荔枝的保存，下列何者正確？",opts:["可以放很久不會壞","採下後很快就會變色、不耐久放","越放越甜"],ans:1,why:"荔枝『一日色變、二日香變』，採下後很快就會變色變味，所以最好趁新鮮盡快吃完。",facts:["唐朝楊貴妃愛吃荔枝，要靠快馬從南方運送，才有『一騎紅塵妃子笑』的詩句。","荔枝吃太多可能會讓血糖波動，空腹大量食用要特別注意。"]},
+{ico:"🍇",icon:"twemoji:grapes",name:"龍眼",wiki:"龍眼",cats:["本土","熱帶"],color:"#a9783f",intro:"龍眼又叫『桂圓』，外皮薄脆呈黃褐色，果肉透明香甜，籽黑得像眼睛，因此得名。曬乾後就是桂圓乾，常用來煮甜湯、入藥補身。",q:"龍眼曬乾之後，有另一個常見的名字叫做什麼？",opts:["桂圓","紅棗","枸杞"],ans:0,why:"龍眼乾就是『桂圓』，常用來煮桂圓紅棗茶、米糕等，是傳統的滋補食材。",facts:["龍眼的『眼』指的是它黑色的種子，從半透明果肉中看起來就像眼珠。","龍眼和荔枝是近親，都屬於無患子科。"]},
+{ico:"🍊",icon:"twemoji:tangerine",name:"柳橙",wiki:"甜橙",cats:["本土","柑橘"],color:"#ff8c1a",intro:"柳橙果皮較緊實不易剝，常被榨成果汁。它酸甜均衡、香氣清新，含有豐富的維生素 C，是早餐桌上常見的水果。",q:"我們常喝的『柳橙汁』主要是用什麼榨成的？",opts:["柳橙的果肉與汁液","柳橙的皮","柳橙的籽"],ans:0,why:"柳橙汁是榨取果肉裡的汁液製成，果皮則常被拿來提煉精油或做成果皮絲。",facts:["柳橙是柚子和橘子雜交而來的柑橘品種。","橙皮上的橘色小點是油囊，含有香氣濃郁的精油。"]},
+{ico:"🐉",icon:"twemoji:dragon",name:"火龍果",wiki:"火龍果",cats:["本土","熱帶"],color:"#e0457b",intro:"火龍果外皮鮮紅帶綠色鱗片，造型像火焰，果肉有白色和紅色兩種，點綴著黑色小籽。它其實是仙人掌科植物的果實，口感清爽、甜度溫和。",q:"火龍果其實是哪一類植物結出的果實？",opts:["仙人掌","椰子樹","葡萄藤"],ans:0,why:"火龍果是『仙人掌科』植物的果實，原產於中南美洲，所以又叫『紅龍果』。",facts:["紅肉火龍果的紅色來自甜菜紅素，吃多了尿液可能會偏紅，屬正常現象。","火龍果的花是夜裡開放的大型潔白花朵。"]},
+{ico:"🍐",icon:"twemoji:pear",name:"芭樂",wiki:"番石榴",cats:["本土"],color:"#9ec96b",intro:"芭樂（番石榴）果皮翠綠、果肉爽脆，是台灣常見又便宜的國民水果。它的維生素 C 含量在水果中名列前茅，常切塊沾梅粉吃。",q:"關於芭樂的維生素 C 含量，下列何者正確？",opts:["非常低，幾乎沒有","在常見水果中名列前茅","和西瓜差不多"],ans:1,why:"芭樂的維生素 C 含量在常見水果中相當高，甚至超過柳橙、檸檬。",facts:["『珍珠芭樂』是台灣很受歡迎的改良品種，果肉厚、籽少。","芭樂在很多熱帶國家是野生蔓延的植物，生命力很強。"]},
+{ico:"🍈",icon:"twemoji:melon",name:"釋迦",wiki:"番荔枝",cats:["本土","熱帶"],color:"#a8c97a",intro:"釋迦表面有一塊塊凸起，外型像佛陀的頭，因此得名。果肉乳白香甜、入口即化，是台東著名的特產水果，又稱番荔枝。",q:"釋迦這個名字的由來，和它的什麼特徵有關？",opts:["凸起的外型像佛陀的頭","味道像某種香料","產地在印度"],ans:0,why:"釋迦表面一塊塊的凸起很像佛像頭部的螺髮，因此被稱為『釋迦』。",facts:["釋迦成熟後會變軟，要等到輕壓有彈性時才好吃。","『鳳梨釋迦』帶有鳳梨般的微酸香氣，是雜交出的品種。"]},
+{ico:"🍊",icon:"twemoji:tangerine",name:"柚子",wiki:"柚",cats:["本土","柑橘"],color:"#d4c84a",intro:"柚子是中秋節的應景水果，外皮厚實、果肉一瓣瓣帶有微苦回甘。台灣麻豆文旦最為知名。柚子皮還能拿來做成柚香清潔劑或頂在頭上應景。",q:"柚子是台灣哪一個傳統節日的應景水果？",opts:["端午節","中秋節","清明節"],ans:1,why:"柚子是中秋節的代表水果，『柚』與『佑』諧音，有保佑的吉祥含意。",facts:["麻豆文旦是台灣最有名的柚子品種，老欉的果實風味更佳。","柚子皮含有大量精油，剝開時噴出的霧氣就是它的香氣來源。"]},
+{ico:"⭐",icon:"twemoji:star",name:"楊桃",wiki:"楊桃",cats:["本土","熱帶"],color:"#e8c93a",intro:"楊桃橫切開來是漂亮的五角星形，果肉清脆多汁、酸甜兼具。它常被做成楊桃汁，傳統上也有醃漬的鹹楊桃。",q:"楊桃橫切開來，切面會是什麼形狀？",opts:["圓形","五角星形","三角形"],ans:1,why:"楊桃有明顯的稜，橫切後切面呈現漂亮的五角星形，所以英文叫 star fruit。",facts:["楊桃分『甜味種』和『酸味種』，酸的常拿來做蜜餞或入菜。","腎臟功能不佳的人要特別注意，楊桃含有的某些成分可能造成負擔。"]},
+{ico:"🍑",icon:"twemoji:peach",name:"枇杷",wiki:"枇杷",cats:["本土"],color:"#f0a93c",intro:"枇杷果皮橙黃、果肉柔軟多汁，是春末初夏的水果。它的葉子常被用來製作潤喉的『枇杷膏』。果實中有幾顆又大又亮的褐色種子。",q:"枇杷的哪個部位，常被用來製作潤喉止咳的產品？",opts:["葉子","種子","樹皮"],ans:0,why:"枇杷葉自古就被用於製作潤喉的枇杷膏等產品，是常見的本草材料。",facts:["枇杷在秋冬開花、春夏結果，花期與多數果樹相反。","枇杷的種子不能生吃，含有不宜食用的成分。"]},
+{ico:"🍑",icon:"twemoji:peach",name:"李子",wiki:"李",cats:["本土"],color:"#7d4a8a",intro:"李子果皮有紅、紫、黃綠等顏色，表面常有一層白霧果粉，果肉酸甜帶勁。它可以鮮吃，也常被製成蜜餞、李子乾或入菜。",q:"李子表面那層白白的粉狀物是什麼？",opts:["發霉了","天然果粉，代表新鮮","農藥殘留"],ans:1,why:"那是李子自己分泌的天然果粉，能保護果實減少水分散失，有它代表很新鮮。",facts:["李子和桃子、櫻桃、梅子都是薔薇科的核果類親戚。","梅子和李子常被搞混，梅子通常更小更酸，多用來醃漬加工。"]},
+{ico:"🟣",icon:"twemoji:purple-circle",name:"百香果",wiki:"百香果",cats:["本土","熱帶"],color:"#7a3b6e",intro:"百香果外皮紫紅或橙黃，剖開後是金黃色帶籽的果膠，酸香濃郁。因為它的香氣豐富多層次，又被稱為『passion fruit』。常加在飲料和甜點裡。",q:"百香果的果肉，最大的特色是什麼？",opts:["香氣濃郁、酸味明顯，連籽一起吃","完全沒有味道","果肉是固體的塊狀"],ans:0,why:"百香果以濃郁多層次的香氣和明顯酸味著稱，金黃色的果膠連同籽一起吃。",facts:["百香果的花構造非常精巧美麗，又被稱為『時鐘花』。","它的中文名『百香』形容它融合了多種水果的香氣。"]},
+{ico:"🔔",icon:"twemoji:bell",name:"蓮霧",wiki:"莲雾",cats:["本土","熱帶"],color:"#d44a5c",intro:"蓮霧外型像小鈴鐺，果皮紅亮、果肉海綿般爽脆多水，甜度高、熱量低。台灣屏東的『黑珍珠』蓮霧特別有名。",q:"台灣屏東出產、品質特別好的蓮霧，有個響亮的名號叫什麼？",opts:["黑珍珠","紅寶石","金鑽石"],ans:0,why:"屏東林邊一帶產的高品質蓮霧色深味甜，被稱為『黑珍珠』蓮霧。",facts:["蓮霧底部有個像肚臍的凹陷，是花朵殘留的部位。","蓮霧幾乎沒有種子或只有很小的種子，咬下去清脆多汁。"]},
+{ico:"🌸",icon:"twemoji:cherry-blossom",name:"梅子",wiki:"梅",cats:["本土"],color:"#88b04b",intro:"梅子小巧青綠或泛黃，味道非常酸，很少人直接生吃，多半製成脆梅、話梅、梅酒或梅醋。台灣南投信義鄉是有名的梅子產地，每年春天梅花盛開很美。",q:"青梅味道很酸，通常會怎麼處理後才食用？",opts:["直接生吃最好吃","醃漬加工成脆梅、話梅或梅酒","曬乾當柴燒"],ans:1,why:"青梅又酸又澀，很少生吃，常透過鹽漬、糖漬等加工，做成脆梅、話梅、梅酒等再食用。",facts:["梅花在寒冬綻放，是『歲寒三友』之一，象徵堅毅。","梅子和桃、李、杏都是薔薇科的近親。"]}
+];
+
+let exp=0,right=0;
+const grid=document.getElementById('grid');
+document.getElementById('tot').textContent=FRUITS.length;
+const imgCache={},galCache={};
+const awn=document.getElementById('awn'),awnEdge=document.getElementById('awnEdge');
+for(let i=0;i<14;i++){awn.appendChild(document.createElement('span'));awnEdge.appendChild(document.createElement('span'));}
+
+// 音效（Web Audio，無需檔案）
+let actx=null;
+function beep(type){
+  try{
+    actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    const o=actx.createOscillator(),g=actx.createGain();
+    o.connect(g);g.connect(actx.destination);
+    if(type==='ok'){o.frequency.setValueAtTime(660,actx.currentTime);o.frequency.setValueAtTime(990,actx.currentTime+.09);}
+    else{o.frequency.setValueAtTime(220,actx.currentTime);o.frequency.setValueAtTime(160,actx.currentTime+.12);}
+    o.type='triangle';
+    g.gain.setValueAtTime(.12,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.3);
+    o.start();o.stop(actx.currentTime+.32);
+  }catch(e){}
+}
+
+// Iconify icon（載入失敗退回 emoji）
+function iconImg(iconName,fallback,size){
+  const url=`https://api.iconify.design/${iconName.replace(':','/')}.svg?width=${size}&height=${size}`;
+  return {url,fallback};
+}
+
+// 維基條目主圖
+async function wikiSummary(title){
+  if(imgCache[title]!==undefined) return imgCache[title];
+  try{
+    const r=await fetch(`https://zh.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+    if(!r.ok){imgCache[title]=null;return null;}
+    const d=await r.json();
+    const res={img:(d.originalimage&&d.originalimage.source)||(d.thumbnail&&d.thumbnail.source)||null,
+      link:(d.content_urls&&d.content_urls.desktop.page)||`https://zh.wikipedia.org/wiki/${encodeURIComponent(title)}`};
+    imgCache[title]=res;return res;
+  }catch(e){imgCache[title]=null;return null;}
+}
+// 維基條目多張照片（media-list），過濾出真實照片(jpg/jpeg)
+async function wikiPhotos(title){
+  if(galCache[title]!==undefined) return galCache[title];
+  const photos=[];
+  try{
+    const r=await fetch(`https://zh.wikipedia.org/api/rest_v1/page/media-list/${encodeURIComponent(title)}`);
+    if(r.ok){
+      const d=await r.json();
+      (d.items||[]).forEach(it=>{
+        if(it.type!=='image') return;
+        const src=it.srcset&&it.srcset[0]&&it.srcset[0].src;
+        if(!src) return;
+        const full=src.startsWith('http')?src:('https:'+src);
+        // 只要照片類(jpg/jpeg)，排除 svg/png 圖標與地圖
+        if(/\.jpe?g/i.test(full)) photos.push(full);
+      });
+    }
+  }catch(e){}
+  galCache[title]=photos.slice(0,6);
+  return galCache[title];
+}
+
+
+// 維基條目影片（media-list 中 type:video，.webm/.ogv）
+const vidCache={};
+async function wikiVideos(title){
+  if(vidCache[title]!==undefined) return vidCache[title];
+  const vids=[];
+  try{
+    const r=await fetch(`https://zh.wikipedia.org/api/rest_v1/page/media-list/${encodeURIComponent(title)}`);
+    if(r.ok){
+      const d=await r.json();
+      (d.items||[]).forEach(it=>{
+        if(it.type!=='video') return;
+        const src=it.srcset&&it.srcset[0]&&it.srcset[0].src;
+        if(!src) return;
+        const full=src.startsWith('http')?src:('https:'+src);
+        vids.push(full);
+      });
+    }
+  }catch(e){}
+  vidCache[title]=vids.slice(0,3);
+  return vidCache[title];
+}
+
+function makeFruitCard(f,i){
+  const b=document.createElement('button');
+  b.className='fruit';b.dataset.i=i;b.dataset.cats=f.cats.join(',');
+  const catLabel=f.cats[0];
+  b.innerHTML=`<span class="badge">✓</span>
+    <span class="pic"><span class="emoji">${f.ico}</span></span>
+    <span class="nm">${f.name}</span><span class="cat">${catLabel}</span>`;
+  b.style.animationDelay=(i*0.03)+'s';
+  b.addEventListener('click',()=>openFruit(i,b));
+  // 載入 Iconify icon
+  const ic=iconImg(f.icon,f.ico,124);
+  const im=new Image();
+  im.onload=()=>{const pic=b.querySelector('.pic');if(pic)pic.innerHTML=`<img src="${ic.url}" alt="${f.name}">`;};
+  im.onerror=()=>{}; // 失敗保留 emoji
+  im.src=ic.url;
+  return b;
+}
+FRUITS.forEach((f,i)=>grid.appendChild(makeFruitCard(f,i)));
+
+// 分類篩選
+document.getElementById('filterBar').addEventListener('click',e=>{
+  const btn=e.target.closest('button');if(!btn)return;
+  document.querySelectorAll('#filterBar button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const cat=btn.dataset.cat;
+  document.querySelectorAll('.fruit').forEach(card=>{
+    const cats=card.dataset.cats.split(',');
+    card.classList.toggle('hide',cat!=='all'&&!cats.includes(cat));
+  });
+});
+
+let current=null,currentBtn=null,answered=false,curOrder=[],galImgs=[],galIdx=0;
+const overlay=document.getElementById('overlay');
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function openFruit(i,btn){
+  current=i;currentBtn=btn;answered=false;
+  const f=FRUITS[i];
+  // 標題 icon
+  const head=document.getElementById('mIco');
+  head.innerHTML=`<span>${f.ico}</span>`;
+  const ic=iconImg(f.icon,f.ico,96);
+  const im=new Image();im.onload=()=>head.innerHTML=`<img src="${ic.url}" alt="">`;im.src=ic.url;
+  document.getElementById('mName').textContent=f.name;
+  document.querySelector('.mhead').style.background=`linear-gradient(120deg,${f.color},#ff8a6e)`;
+  switchPanel('quiz');
+  renderQuiz(f);
+  // 真實照片相簿
+  renderGallery(f);
+  // 影片
+  renderVideo(f);
+  // 冷知識
+  const fl=document.getElementById('factBody');fl.innerHTML='';
+  f.facts.forEach((ft,n)=>{const li=document.createElement('li');li.innerHTML=`<span class="tag">冷知識 ${n+1}</span>${ft}`;fl.appendChild(li);});
+  overlay.classList.add('show');
+}
+
+function renderQuiz(f){
+  answered=false;
+  document.getElementById('qText').textContent=f.q;
+  const opts=document.getElementById('qOpts');opts.innerHTML='';
+  const keys=['A','B','C','D'];
+  // 打亂選項順序
+  curOrder=shuffle(f.opts.map((o,idx)=>idx));
+  curOrder.forEach((origIdx,pos)=>{
+    const ob=document.createElement('button');
+    ob.innerHTML=`<span class="k">${keys[pos]}</span><span>${f.opts[origIdx]}</span>`;
+    ob.dataset.orig=origIdx;
+    ob.addEventListener('click',()=>answer(origIdx,ob,f));
+    opts.appendChild(ob);
+  });
+  const fb=document.getElementById('qFb');fb.className='feedback';fb.innerHTML='';
+  document.getElementById('goIntro').classList.remove('show');
+  document.getElementById('retryBtn').classList.remove('show');
+}
+
+function answer(origIdx,btn,f){
+  if(answered) return;answered=true;
+  const allBtns=document.querySelectorAll('#qOpts button');
+  allBtns.forEach(b=>b.disabled=true);
+  const fb=document.getElementById('qFb');
+  const firstTime=!currentBtn.classList.contains('done');
+  if(origIdx===f.ans){
+    btn.classList.add('correct');beep('ok');
+    if(firstTime){right++;document.getElementById('right').textContent=right;}
+    fb.className='feedback ok show';
+    fb.innerHTML=`<b>🎉 答對了！</b><br>${f.why}`;
+    document.getElementById('goIntro').classList.add('show');
+    if(firstTime) markDone();
+  }else{
+    btn.classList.add('wrong','shake');beep('no');
+    allBtns.forEach(b=>{if(+b.dataset.orig===f.ans)b.classList.add('correct');});
+    fb.className='feedback no show';
+    fb.innerHTML=`<b>💡 再想想～</b><br>${f.why}`;
+    document.getElementById('retryBtn').classList.add('show');
+    document.getElementById('goIntro').classList.add('show');
+  }
+}
+function markDone(){
+  currentBtn.classList.add('done');exp++;
+  document.getElementById('exp').textContent=exp;
+  if(exp===FRUITS.length) setTimeout(showWin,600);
+}
+document.getElementById('retryBtn').addEventListener('click',()=>renderQuiz(FRUITS[current]));
+
+// 相簿
+function renderGallery(f){
+  const g=document.getElementById('gallery');
+  galImgs=[];galIdx=0;
+  g.querySelectorAll('img').forEach(im=>im.remove());
+  g.classList.add('loading');
+  g.querySelector('.prev').style.display='none';
+  g.querySelector('.next').style.display='none';
+  document.getElementById('gDots').innerHTML='';
+  let emo=g.querySelector('.emoji');if(!emo){emo=document.createElement('span');emo.className='emoji';g.appendChild(emo);}
+  emo.textContent=f.ico;emo.style.display='block';
+  document.getElementById('picSrc').innerHTML='';
+  document.getElementById('introBody').innerHTML=`<p>${f.intro}</p>`;
+  // 先抓主圖，再抓多張
+  Promise.all([wikiSummary(f.wiki),wikiPhotos(f.wiki)]).then(([sum,photos])=>{
+    g.classList.remove('loading');
+    const urls=[];
+    if(sum&&sum.img) urls.push(sum.img);
+    photos.forEach(p=>{if(!urls.includes(p))urls.push(p);});
+    galImgs=urls.slice(0,6);
+    if(galImgs.length===0){
+      document.getElementById('picSrc').innerHTML=`（此條目暫無照片，以圖示代替）・ <a href="https://zh.wikipedia.org/wiki/${encodeURIComponent(f.wiki)}" target="_blank">查看條目 →</a>`;
+      return;
+    }
+    emo.style.display='none';
+    galImgs.forEach((u,n)=>{
+      const im=document.createElement('img');im.src=u;im.alt=f.name;
+      if(n===0)im.classList.add('on');
+      im.onclick=()=>window.open((sum&&sum.link)||`https://zh.wikipedia.org/wiki/${encodeURIComponent(f.wiki)}`,'_blank');
+      im.onerror=()=>{im.remove();};
+      g.insertBefore(im,g.querySelector('.prev'));
+      const dot=document.createElement('i');if(n===0)dot.classList.add('on');
+      document.getElementById('gDots').appendChild(dot);
+    });
+    if(galImgs.length>1){
+      g.querySelector('.prev').style.display='block';
+      g.querySelector('.next').style.display='block';
+    }
+    document.getElementById('picSrc').innerHTML=`📷 真實照片 ${galImgs.length} 張・來源：維基百科 ・ <a href="${(sum&&sum.link)||'#'}" target="_blank">查看條目 →</a>`;
+  });
+}
+function showGal(n){
+  const imgs=document.querySelectorAll('#gallery img');
+  if(!imgs.length)return;
+  galIdx=(n+imgs.length)%imgs.length;
+  imgs.forEach((im,i)=>im.classList.toggle('on',i===galIdx));
+  document.querySelectorAll('#gDots i').forEach((d,i)=>d.classList.toggle('on',i===galIdx));
+}
+document.getElementById('gPrev').addEventListener('click',()=>showGal(galIdx-1));
+document.getElementById('gNext').addEventListener('click',()=>showGal(galIdx+1));
+
+// 影片：先抓維基條目影片，沒有就連到 YouTube 搜尋
+function renderVideo(f){
+  const box=document.getElementById('videoBox');
+  box.className='videoBox loading';box.innerHTML='';
+  document.getElementById('vidSrc').innerHTML='';
+  const ytUrl='https://www.youtube.com/results?search_query='+encodeURIComponent(f.name+' 水果 介紹');
+  const gUrl='https://www.google.com/search?tbm=vid&q='+encodeURIComponent(f.name+' 水果');
+  wikiVideos(f.wiki).then(vids=>{
+    box.classList.remove('loading');
+    if(vids&&vids.length){
+      box.innerHTML='';
+      vids.forEach(v=>{
+        const vd=document.createElement('video');
+        vd.controls=true;vd.preload='metadata';
+        vd.src=v;
+        vd.onerror=()=>{vd.remove();if(!box.querySelector('video'))showNoVid();};
+        box.appendChild(vd);
+      });
+      document.getElementById('vidSrc').innerHTML=`🎬 維基百科條目影片 ${vids.length} 部・來源：維基百科 (CC)`;
+      // 影片載入後若全失敗，補上搜尋
+      setTimeout(()=>{if(!box.querySelector('video'))showNoVid();},100);
+    }else{
+      showNoVid();
+    }
+  });
+  function showNoVid(){
+    box.classList.remove('loading');
+    box.innerHTML=`<div class="noVid"><span class="vemoji">${f.ico}</span>
+      這個條目目前沒有現成影片，<br>到影片平台搜尋「${f.name}」看更多吧！</div>
+      <a class="searchBtn" href="${ytUrl}" target="_blank">▶ 在 YouTube 搜尋影片</a>
+      <a class="searchBtn g" href="${gUrl}" target="_blank">🔍 Google 影片搜尋</a>`;
+    document.getElementById('vidSrc').innerHTML='點按鈕會開啟新分頁搜尋相關影片';
+  }
+}
+
+
+
+const tabs=document.querySelectorAll('.section-tab button');
+tabs.forEach(t=>t.addEventListener('click',()=>switchPanel(t.dataset.p)));
+function switchPanel(name){
+  tabs.forEach(t=>t.classList.toggle('on',t.dataset.p===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p'+name.charAt(0).toUpperCase()+name.slice(1)).classList.add('on');
+  if(name!=='video'){document.querySelectorAll('#videoBox video').forEach(v=>v.pause());}
+}
+document.getElementById('goIntro').addEventListener('click',()=>switchPanel('intro'));
+document.getElementById('goVideo').addEventListener('click',()=>switchPanel('video'));
+document.getElementById('goFact').addEventListener('click',()=>switchPanel('fact'));
+document.getElementById('goFact2').addEventListener('click',()=>switchPanel('fact'));
+function close(){overlay.classList.remove('show');document.querySelectorAll('#videoBox video').forEach(v=>v.pause());}
+document.getElementById('closeBtn').addEventListener('click',close);
+overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')close();
+  if(overlay.classList.contains('show')&&document.getElementById('pIntro').classList.contains('on')){
+    if(e.key==='ArrowLeft')showGal(galIdx-1);
+    if(e.key==='ArrowRight')showGal(galIdx+1);
+  }
+});
+
+function showWin(){
+  close();
+  document.getElementById('winMsg').innerHTML=`你逛遍了整個水果攤，<br>認識了 <b>${FRUITS.length}</b> 種水果，答對 <b>${right}</b> 題！<br>你是最棒的水果小達人！`;
+  document.getElementById('win').classList.add('show');shootConfetti();
+}
+document.getElementById('winClose').addEventListener('click',()=>{document.getElementById('win').classList.remove('show');});
+function shootConfetti(){
+  const cols=['#ff5a7d','#ffc23c','#46b35e','#8e5fd0','#23a6a0','#ff9f1c'];
+  for(let i=0;i<80;i++){
+    const c=document.createElement('div');c.className='confetti';
+    c.style.left=Math.random()*100+'vw';c.style.background=cols[i%cols.length];
+    c.style.borderRadius=Math.random()>.5?'50%':'2px';
+    const dur=2+Math.random()*2,delay=Math.random()*0.6;
+    c.animate([{transform:`translateY(0) rotate(0)`,opacity:1},{transform:`translateY(105vh) rotate(${720+Math.random()*360}deg)`,opacity:.9}],{duration:dur*1000,delay:delay*1000,easing:'cubic-bezier(.3,.6,.5,1)'});
+    document.body.appendChild(c);setTimeout(()=>c.remove(),(dur+delay)*1000+100);
+  }
+}
+</script>
+</body>
+</html>
