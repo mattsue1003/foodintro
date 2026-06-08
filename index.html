@@ -24,10 +24,6 @@ header p{margin-top:10px;color:var(--wood-d);font-weight:600;font-size:clamp(14p
 .score{display:inline-flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center}
 .score .chip{background:#fff;border:3px solid var(--wood);border-radius:30px;padding:7px 18px;font-weight:700;box-shadow:0 4px 0 var(--wood-d);font-size:15px}
 .score .chip b{color:var(--awning)}
-.toolbar{position:relative;z-index:2;max-width:980px;margin:14px auto 0;padding:0 14px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.toolbar button{border:3px solid var(--wood);background:#fff;border-radius:30px;padding:6px 16px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink);box-shadow:0 3px 0 var(--wood-d);transition:.15s}
-.toolbar button.on{background:var(--leaf);color:#fff;border-color:#3f7a30}
-.toolbar button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--wood-d)}
 .stage{position:relative;z-index:2;max-width:980px;margin:14px auto 70px;padding:0 14px}
 .stall{position:relative;background:linear-gradient(180deg,#d8853f,#b5703c);border:6px solid var(--wood-d);border-radius:22px;padding:0 0 26px;box-shadow:0 16px 40px rgba(110,60,20,.35);overflow:hidden}
 .awning{display:flex;height:54px;border-radius:14px 14px 0 0;overflow:hidden;box-shadow:0 4px 0 rgba(0,0,0,.12)}
@@ -46,11 +42,9 @@ header p{margin-top:10px;color:var(--wood-d);font-weight:600;font-size:clamp(14p
 .fruit .pic .emoji{font-size:50px;line-height:1;filter:drop-shadow(0 3px 3px rgba(0,0,0,.15));animation:sway 3s ease-in-out infinite}
 @keyframes sway{50%{transform:translateY(-4px) rotate(3deg)}}
 .fruit .nm{display:block;margin-top:6px;font-weight:700;font-size:14px}
-.fruit .cat{display:inline-block;margin-top:3px;font-size:10px;padding:1px 8px;border-radius:20px;background:#ffe6b8;color:var(--wood-d);font-weight:700}
 .fruit.done{background:linear-gradient(180deg,#e8f7d8,#d2efb6)}
 .fruit .badge{position:absolute;top:-10px;right:-8px;width:30px;height:30px;background:var(--leaf);color:#fff;border:3px solid #fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:15px;box-shadow:0 3px 6px rgba(0,0,0,.2);transform:rotate(8deg);z-index:3}
 .fruit.done .badge{display:flex;animation:pop .4s cubic-bezier(.2,1.4,.5,1)}
-.fruit.hide{display:none}
 @keyframes pop{from{transform:scale(0) rotate(8deg)}to{transform:scale(1) rotate(8deg)}}
 .plank{height:14px;background:linear-gradient(180deg,#c98a4c,#9c5e2c);border-radius:6px;margin:10px 16px 0;box-shadow:0 4px 0 rgba(0,0,0,.12)}
 .hint{text-align:center;margin-top:16px;color:var(--wood-d);font-weight:600;font-size:15px}
@@ -136,13 +130,6 @@ footer{position:relative;z-index:2;text-align:center;color:var(--wood-d);font-si
     <span class="chip">答對 <b id="right">0</b> 題</span>
   </div>
 </header>
-<div class="toolbar" id="filterBar">
-  <button data-cat="all" class="on">全部</button>
-  <button data-cat="本土">🇹🇼 本土</button>
-  <button data-cat="進口">✈️ 常進口</button>
-  <button data-cat="熱帶">🌴 熱帶</button>
-  <button data-cat="柑橘">🍊 柑橘類</button>
-</div>
 <div class="stage">
   <div class="stall">
     <div class="awning" id="awn"></div>
@@ -325,11 +312,10 @@ async function wikiVideos(title){
 
 function makeFruitCard(f,i){
   const b=document.createElement('button');
-  b.className='fruit';b.dataset.i=i;b.dataset.cats=f.cats.join(',');
-  const catLabel=f.cats[0];
+  b.className='fruit';b.dataset.i=i;
   b.innerHTML=`<span class="badge">✓</span>
     <span class="pic"><span class="emoji">${f.ico}</span></span>
-    <span class="nm">${f.name}</span><span class="cat">${catLabel}</span>`;
+    <span class="nm">${f.name}</span>`;
   b.style.animationDelay=(i*0.03)+'s';
   b.addEventListener('click',()=>openFruit(i,b));
   // 載入 Iconify icon
@@ -342,25 +328,13 @@ function makeFruitCard(f,i){
 }
 FRUITS.forEach((f,i)=>grid.appendChild(makeFruitCard(f,i)));
 
-// 分類篩選
-document.getElementById('filterBar').addEventListener('click',e=>{
-  const btn=e.target.closest('button');if(!btn)return;
-  document.querySelectorAll('#filterBar button').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  const cat=btn.dataset.cat;
-  document.querySelectorAll('.fruit').forEach(card=>{
-    const cats=card.dataset.cats.split(',');
-    card.classList.toggle('hide',cat!=='all'&&!cats.includes(cat));
-  });
-});
-
-let current=null,currentBtn=null,answered=false,curOrder=[],galImgs=[],galIdx=0;
+let current=null,currentBtn=null,answered=false,curOrder=[],galImgs=[],galIdx=0,reqToken=0;
 const overlay=document.getElementById('overlay');
 
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 function openFruit(i,btn){
-  current=i;currentBtn=btn;answered=false;
+  current=i;currentBtn=btn;answered=false;reqToken++;
   const f=FRUITS[i];
   // 標題 icon
   const head=document.getElementById('mIco');
@@ -431,6 +405,7 @@ document.getElementById('retryBtn').addEventListener('click',()=>renderQuiz(FRUI
 
 // 相簿
 function renderGallery(f){
+  const myToken=reqToken;
   const g=document.getElementById('gallery');
   galImgs=[];galIdx=0;
   g.querySelectorAll('img').forEach(im=>im.remove());
@@ -442,33 +417,49 @@ function renderGallery(f){
   emo.textContent=f.ico;emo.style.display='block';
   document.getElementById('picSrc').innerHTML='';
   document.getElementById('introBody').innerHTML=`<p>${f.intro}</p>`;
-  // 先抓主圖，再抓多張
   Promise.all([wikiSummary(f.wiki),wikiPhotos(f.wiki)]).then(([sum,photos])=>{
+    if(myToken!==reqToken) return; // 已切換到別顆水果，放棄
     g.classList.remove('loading');
     const urls=[];
     if(sum&&sum.img) urls.push(sum.img);
-    photos.forEach(p=>{if(!urls.includes(p))urls.push(p);});
+    (photos||[]).forEach(p=>{if(!urls.includes(p))urls.push(p);});
     galImgs=urls.slice(0,6);
+    const link=(sum&&sum.link)||`https://zh.wikipedia.org/wiki/${encodeURIComponent(f.wiki)}`;
     if(galImgs.length===0){
-      document.getElementById('picSrc').innerHTML=`（此條目暫無照片，以圖示代替）・ <a href="https://zh.wikipedia.org/wiki/${encodeURIComponent(f.wiki)}" target="_blank">查看條目 →</a>`;
+      document.getElementById('picSrc').innerHTML=`（此條目暫無照片，以圖示代替）・ <a href="${link}" target="_blank">查看條目 →</a>`;
       return;
     }
     emo.style.display='none';
     galImgs.forEach((u,n)=>{
-      const im=document.createElement('img');im.src=u;im.alt=f.name;
+      const im=document.createElement('img');im.alt=f.name;im.dataset.idx=n;
       if(n===0)im.classList.add('on');
-      im.onclick=()=>window.open((sum&&sum.link)||`https://zh.wikipedia.org/wiki/${encodeURIComponent(f.wiki)}`,'_blank');
-      im.onerror=()=>{im.remove();};
+      im.onclick=()=>window.open(link,'_blank');
+      im.onerror=()=>{ // 壞圖：連同對應圓點一起移除並重新編號
+        const wasOn=im.classList.contains('on');
+        im.remove();
+        rebuildDots();
+        if(wasOn) showGal(0);
+        if(!g.querySelector('img')){
+          emo.style.display='block';
+          document.getElementById('picSrc').innerHTML=`（照片載入失敗，以圖示代替）・ <a href="${link}" target="_blank">查看條目 →</a>`;
+        }
+      };
+      im.src=u;
       g.insertBefore(im,g.querySelector('.prev'));
-      const dot=document.createElement('i');if(n===0)dot.classList.add('on');
-      document.getElementById('gDots').appendChild(dot);
     });
-    if(galImgs.length>1){
-      g.querySelector('.prev').style.display='block';
-      g.querySelector('.next').style.display='block';
-    }
-    document.getElementById('picSrc').innerHTML=`📷 真實照片 ${galImgs.length} 張・來源：維基百科 ・ <a href="${(sum&&sum.link)||'#'}" target="_blank">查看條目 →</a>`;
+    rebuildDots();
+    document.getElementById('picSrc').innerHTML=`📷 真實照片・來源：維基百科 ・ <a href="${link}" target="_blank">查看條目 →</a>`;
   });
+}
+function rebuildDots(){
+  const g=document.getElementById('gallery');
+  const imgs=g.querySelectorAll('img');
+  const dots=document.getElementById('gDots');
+  dots.innerHTML='';
+  imgs.forEach((im,i)=>{const d=document.createElement('i');if(im.classList.contains('on'))d.classList.add('on');dots.appendChild(d);});
+  const multi=imgs.length>1;
+  g.querySelector('.prev').style.display=multi?'block':'none';
+  g.querySelector('.next').style.display=multi?'block':'none';
 }
 function showGal(n){
   const imgs=document.querySelectorAll('#gallery img');
@@ -482,40 +473,38 @@ document.getElementById('gNext').addEventListener('click',()=>showGal(galIdx+1))
 
 // 影片：先抓維基條目影片，沒有就連到 YouTube 搜尋
 function renderVideo(f){
+  const myToken=reqToken;
   const box=document.getElementById('videoBox');
   box.className='videoBox loading';box.innerHTML='';
   document.getElementById('vidSrc').innerHTML='';
   const ytUrl='https://www.youtube.com/results?search_query='+encodeURIComponent(f.name+' 水果 介紹');
   const gUrl='https://www.google.com/search?tbm=vid&q='+encodeURIComponent(f.name+' 水果');
+  function showNoVid(){
+    box.classList.remove('loading');
+    box.innerHTML=`<div class="noVid"><span class="vemoji">${f.ico}</span>這個條目目前沒有現成影片，<br>到影片平台搜尋「${f.name}」看更多吧！</div>`+
+      `<a class="searchBtn" href="${ytUrl}" target="_blank">▶ 在 YouTube 搜尋影片</a>`+
+      `<a class="searchBtn g" href="${gUrl}" target="_blank">🔍 Google 影片搜尋</a>`;
+    document.getElementById('vidSrc').innerHTML='點按鈕會開啟新分頁搜尋相關影片';
+  }
   wikiVideos(f.wiki).then(vids=>{
+    if(myToken!==reqToken) return;
     box.classList.remove('loading');
     if(vids&&vids.length){
       box.innerHTML='';
+      let loaded=0,errored=0;
       vids.forEach(v=>{
         const vd=document.createElement('video');
-        vd.controls=true;vd.preload='metadata';
-        vd.src=v;
-        vd.onerror=()=>{vd.remove();if(!box.querySelector('video'))showNoVid();};
+        vd.controls=true;vd.preload='metadata';vd.src=v;
+        vd.onloadedmetadata=()=>{loaded++;};
+        vd.onerror=()=>{errored++;vd.remove();if(errored===vids.length)showNoVid();};
         box.appendChild(vd);
       });
-      document.getElementById('vidSrc').innerHTML=`🎬 維基百科條目影片 ${vids.length} 部・來源：維基百科 (CC)`;
-      // 影片載入後若全失敗，補上搜尋
-      setTimeout(()=>{if(!box.querySelector('video'))showNoVid();},100);
+      document.getElementById('vidSrc').innerHTML=`🎬 維基百科條目影片・來源：維基百科 (CC)`;
     }else{
       showNoVid();
     }
   });
-  function showNoVid(){
-    box.classList.remove('loading');
-    box.innerHTML=`<div class="noVid"><span class="vemoji">${f.ico}</span>
-      這個條目目前沒有現成影片，<br>到影片平台搜尋「${f.name}」看更多吧！</div>
-      <a class="searchBtn" href="${ytUrl}" target="_blank">▶ 在 YouTube 搜尋影片</a>
-      <a class="searchBtn g" href="${gUrl}" target="_blank">🔍 Google 影片搜尋</a>`;
-    document.getElementById('vidSrc').innerHTML='點按鈕會開啟新分頁搜尋相關影片';
-  }
 }
-
-
 
 const tabs=document.querySelectorAll('.section-tab button');
 tabs.forEach(t=>t.addEventListener('click',()=>switchPanel(t.dataset.p)));
