@@ -39,7 +39,7 @@ header p{margin-top:10px;color:var(--wood-d);font-weight:600;font-size:clamp(14p
 .fruit:active{transform:translateY(2px);box-shadow:0 3px 0 var(--wood-d)}
 .fruit .pic{width:100%;height:72px;display:flex;align-items:center;justify-content:center;position:relative}
 .fruit .pic img{width:62px;height:62px;object-fit:contain;filter:drop-shadow(0 4px 4px rgba(0,0,0,.18));animation:sway 3s ease-in-out infinite}
-.fruit .pic img.photo{width:64px;height:64px;object-fit:contain;border-radius:0;border:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.22))}
+.fruit .pic img.photo{width:66px;height:66px;object-fit:cover;border-radius:14px;border:2px solid #fff;box-shadow:0 3px 5px rgba(0,0,0,.2);filter:none;background:#fff}
 .fruit .pic .emoji{font-size:50px;line-height:1;filter:drop-shadow(0 3px 3px rgba(0,0,0,.15));animation:sway 3s ease-in-out infinite}
 @keyframes sway{50%{transform:translateY(-4px) rotate(3deg)}}
 .fruit .nm{display:block;margin-top:6px;font-weight:700;font-size:14px}
@@ -57,7 +57,7 @@ header p{margin-top:10px;color:var(--wood-d);font-weight:600;font-size:clamp(14p
 @keyframes rise{from{transform:scale(.85) translateY(30px);opacity:0}to{transform:scale(1);opacity:1}}
 .mhead{position:sticky;top:0;background:linear-gradient(120deg,var(--awning),#ff6b5c);color:#fff;padding:16px 22px;display:flex;align-items:center;gap:14px;z-index:2}
 .mhead .big{width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:42px;line-height:1;filter:drop-shadow(0 3px 2px rgba(0,0,0,.2))}
-.mhead .big img{width:48px;height:48px;object-fit:contain}
+.mhead .big img{width:48px;height:48px;object-fit:cover;border-radius:11px;border:2px solid rgba(255,255,255,.6)}
 .mhead h2{font-size:25px;font-weight:800;flex:1}
 .mhead .close{cursor:pointer;background:rgba(255,255,255,.25);border:none;color:#fff;width:38px;height:38px;border-radius:50%;font-size:24px;line-height:1;transition:.2s}
 .mhead .close:hover{background:rgba(255,255,255,.45);transform:rotate(90deg)}
@@ -83,6 +83,8 @@ header p{margin-top:10px;color:var(--wood-d);font-weight:600;font-size:clamp(14p
 .videoBox.loading::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);animation:sh 1.1s infinite}
 .videoBox .noVid{text-align:center;color:var(--wood-d);font-weight:600}
 .videoBox .noVid .vemoji{font-size:60px;display:block;margin-bottom:8px}
+.videoBox .noVid .vimg{width:90px;height:90px;object-fit:cover;border-radius:18px;border:3px solid #fff;box-shadow:0 4px 8px rgba(0,0,0,.2);display:block;margin:0 auto 10px;background:#fff}
+.videoBox .noVid .vimg-icon{width:80px;height:80px;object-fit:contain;display:block;margin:0 auto 10px;filter:drop-shadow(0 4px 5px rgba(0,0,0,.2))}
 .searchBtn{display:inline-flex;align-items:center;gap:8px;border:none;background:#ff0000;color:#fff;font-family:inherit;font-weight:800;font-size:16px;padding:13px 24px;border-radius:30px;cursor:pointer;box-shadow:0 5px 0 #b30000;text-decoration:none;transition:.15s}
 .searchBtn:active{transform:translateY(3px);box-shadow:0 2px 0 #b30000}
 .searchBtn.g{background:#4285f4;box-shadow:0 5px 0 #2a5db0}
@@ -211,7 +213,7 @@ const FRUITS=[
 {ico:"🍈",icon:"twemoji:melon",name:"哈密瓜",wiki:"哈密瓜",cats:["本土"],color:"#b6d36b",intro:"哈密瓜表皮有網狀紋路，果肉橙黃或淡綠，香氣濃郁、甜度高。它屬於甜瓜的一種，原本因新疆哈密地區出產而得名。",q:"哈密瓜表皮那一層網狀的紋路是怎麼形成的？",opts:["人工刻上去的","果實長大時表皮裂開又癒合的痕跡","被網子壓出來的"],ans:1,why:"哈密瓜長大時果肉撐裂表皮，裂縫癒合後就形成了網狀紋路，紋路越密通常代表越成熟。",facts:["哈密瓜和西瓜、小黃瓜都屬於葫蘆科。","哈密瓜的甜味主要集中在靠近瓜瓤（籽）的中心部位。"]},
 {ico:"🥭",icon:"twemoji:mango",name:"木瓜",wiki:"番木瓜",cats:["本土","熱帶"],color:"#f5923e",intro:"木瓜果肉橙黃柔軟、味道香甜，台灣四季都吃得到，木瓜牛奶是經典飲品。未熟的青木瓜則常拿來涼拌或入菜。木瓜含有能分解蛋白質的木瓜酵素。",q:"還沒成熟的青木瓜，在料理上常被拿來做什麼？",opts:["打成甜的果汁","切絲涼拌或入菜","直接曬成果乾"],ans:1,why:"青木瓜口感爽脆、味道清淡，東南亞常拿來做涼拌青木瓜絲等鹹味料理。",facts:["木瓜含有『木瓜酵素』，能分解蛋白質，常用於肉類嫩化。","木瓜的種子是黑色一粒粒的，帶有微微的辛辣味。"]},
 {ico:"🍒",icon:"twemoji:cherries",name:"荔枝",customImg:"https://png.pngtree.com/png-clipart/20220111/ourmid/pngtree-fruit-litchi-hand-painted-original-hand-painted-cartoon-png-image_4272494.png",wikiThumb:true,wiki:"荔枝",cats:["本土","熱帶"],color:"#d94f5c",intro:"荔枝外皮粗糙帶刺、呈紅色，剝開後是晶瑩半透明的白色果肉，香甜多汁，是夏季限定的水果。古代楊貴妃愛吃荔枝的故事很有名。",q:"關於荔枝的保存，下列何者正確？",opts:["可以放很久不會壞","採下後很快就會變色、不耐久放","越放越甜"],ans:1,why:"荔枝『一日色變、二日香變』，採下後很快就會變色變味，所以最好趁新鮮盡快吃完。",facts:["唐朝楊貴妃愛吃荔枝，要靠快馬從南方運送，才有『一騎紅塵妃子笑』的詩句。","荔枝吃太多可能會讓血糖波動，空腹大量食用要特別注意。"]},
-{ico:"🍇",icon:"twemoji:grapes",name:"龍眼",customImg:"https://pic.huitu.com/pic/20210116/2537933_20210116100307503037_0.jpg",wikiThumb:true,wiki:"龍眼",cats:["本土","熱帶"],color:"#a9783f",intro:"龍眼又叫『桂圓』，外皮薄脆呈黃褐色，果肉透明香甜，籽黑得像眼睛，因此得名。曬乾後就是桂圓乾，常用來煮甜湯、入藥補身。",q:"龍眼曬乾之後，有另一個常見的名字叫做什麼？",opts:["桂圓","紅棗","枸杞"],ans:0,why:"龍眼乾就是『桂圓』，常用來煮桂圓紅棗茶、米糕等，是傳統的滋補食材。",facts:["龍眼的『眼』指的是它黑色的種子，從半透明果肉中看起來就像眼珠。","龍眼和荔枝是近親，都屬於無患子科。"]},
+{ico:"🍇",icon:"twemoji:grapes",name:"龍眼",customImg:"https://png.pngtree.com/png-clipart/20250519/original/pngtree-a-whole-longan-and-peeled-with-seed-exposed-isolated-on-transparent-png-image_21029455.png",wikiThumb:true,wiki:"龍眼",cats:["本土","熱帶"],color:"#a9783f",intro:"龍眼又叫『桂圓』，外皮薄脆呈黃褐色，果肉透明香甜，籽黑得像眼睛，因此得名。曬乾後就是桂圓乾，常用來煮甜湯、入藥補身。",q:"龍眼曬乾之後，有另一個常見的名字叫做什麼？",opts:["桂圓","紅棗","枸杞"],ans:0,why:"龍眼乾就是『桂圓』，常用來煮桂圓紅棗茶、米糕等，是傳統的滋補食材。",facts:["龍眼的『眼』指的是它黑色的種子，從半透明果肉中看起來就像眼珠。","龍眼和荔枝是近親，都屬於無患子科。"]},
 {ico:"🍊",icon:"twemoji:tangerine",name:"柳橙",customImg:"https://png.pngtree.com/png-vector/20230831/ourmid/pngtree-orange-fruit-fruit-in-a-simple-illustration-with-gradient-color-png-image_9218665.png",wiki:"甜橙",cats:["本土","柑橘"],color:"#ff8c1a",intro:"柳橙果皮較緊實不易剝，常被榨成果汁。它酸甜均衡、香氣清新，含有豐富的維生素 C，是早餐桌上常見的水果。",q:"我們常喝的『柳橙汁』主要是用什麼榨成的？",opts:["柳橙的果肉與汁液","柳橙的皮","柳橙的籽"],ans:0,why:"柳橙汁是榨取果肉裡的汁液製成，果皮則常被拿來提煉精油或做成果皮絲。",facts:["柳橙是柚子和橘子雜交而來的柑橘品種。","橙皮上的橘色小點是油囊，含有香氣濃郁的精油。"]},
 {ico:"🐉",icon:"twemoji:dragon",name:"火龍果",customImg:"https://png.pngtree.com/png-clipart/20220111/ourmid/pngtree-hand-drawn-dragon-fruit-illustration-vector-png-image_4271693.png",wikiThumb:true,wiki:"火龍果",cats:["本土","熱帶"],color:"#e0457b",intro:"火龍果外皮鮮紅帶綠色鱗片，造型像火焰，果肉有白色和紅色兩種，點綴著黑色小籽。它其實是仙人掌科植物的果實，口感清爽、甜度溫和。",q:"火龍果其實是哪一類植物結出的果實？",opts:["仙人掌","椰子樹","葡萄藤"],ans:0,why:"火龍果是『仙人掌科』植物的果實，原產於中南美洲，所以又叫『紅龍果』。",facts:["紅肉火龍果的紅色來自甜菜紅素，吃多了尿液可能會偏紅，屬正常現象。","火龍果的花是夜裡開放的大型潔白花朵。"]},
 {ico:"🍐",icon:"twemoji:pear",name:"芭樂",customImg:"https://png.pngtree.com/png-clipart/20230115/original/pngtree-cartoon-cute-guava-hand-drawn-fruit-elements-png-image_8912606.png",wiki:"番石榴",cats:["本土"],color:"#9ec96b",intro:"芭樂（番石榴）果皮翠綠、果肉爽脆，是台灣常見又便宜的國民水果。它的維生素 C 含量在水果中名列前茅，常切塊沾梅粉吃。",q:"關於芭樂的維生素 C 含量，下列何者正確？",opts:["非常低，幾乎沒有","在常見水果中名列前茅","和西瓜差不多"],ans:1,why:"芭樂的維生素 C 含量在常見水果中相當高，甚至超過柳橙、檸檬。",facts:["『珍珠芭樂』是台灣很受歡迎的改良品種，果肉厚、籽少。","芭樂在很多熱帶國家是野生蔓延的植物，生命力很強。"]},
@@ -252,6 +254,25 @@ function iconImg(iconName,fallback,size){
   const url=`https://api.iconify.design/${iconName.replace(':','/')}.svg?width=${size}&height=${size}`;
   return {url,fallback};
 }
+
+// 解析一顆水果「最終要顯示的圖」(首頁/標題/影片頁共用，確保三處一致)
+// 依序嘗試：customImg → 維基照片 → Iconify icon；全失敗 cb(null)
+function resolveFruitImg(f,cb){
+  const iconUrl=iconImg(f.icon,f.ico,124).url;
+  const tryIcon=()=>{const im=new Image();im.onload=()=>cb({url:iconUrl,isPhoto:false});im.onerror=()=>cb(null);im.src=iconUrl;};
+  const tryWiki=()=>{wikiSummary(f.wiki).then(sm=>{
+      if(sm&&sm.img){const wm=new Image();wm.onload=()=>cb({url:sm.img,isPhoto:true});wm.onerror=tryIcon;wm.src=sm.img;}
+      else tryIcon();
+    }).catch(tryIcon);};
+  if(f.customImg){
+    const ci=new Image();
+    ci.onload=()=>cb({url:f.customImg,isPhoto:true});
+    ci.onerror=()=>{ f.wikiThumb?tryWiki():tryIcon(); };
+    ci.src=f.customImg;
+  }else if(f.wikiThumb){ tryWiki(); }
+  else{ tryIcon(); }
+}
+
 
 // 維基條目主圖
 async function wikiSummary(title){
@@ -318,26 +339,12 @@ function makeFruitCard(f,i){
     <span class="nm">${f.name}</span>`;
   b.style.animationDelay=(i*0.03)+'s';
   b.addEventListener('click',()=>openFruit(i,b));
-  // 圖片優先序：自訂圖 → (標記)維基照片 → Iconify icon → emoji(保底)
-  const setPic=(url,photo)=>{const pic=b.querySelector('.pic');if(pic)pic.innerHTML=`<img class="${photo?'photo':''}" src="${url}" alt="${f.name}">`;};
-  const iconUrl=iconImg(f.icon,f.ico,124).url;
-  const loadIcon=()=>{const im=new Image();im.onload=()=>setPic(iconUrl,false);im.onerror=()=>{};im.src=iconUrl;};
-  const loadWikiThumb=()=>{
-    wikiSummary(f.wiki).then(sum=>{
-      if(sum&&sum.img){const wm=new Image();wm.onload=()=>setPic(sum.img,true);wm.onerror=loadIcon;wm.src=sum.img;}
-      else loadIcon();
-    }).catch(loadIcon);
-  };
-  if(f.customImg){
-    const ci=new Image();
-    ci.onload=()=>setPic(f.customImg,true);
-    ci.onerror=()=>{ f.wikiThumb?loadWikiThumb():loadIcon(); };
-    ci.src=f.customImg;
-  }else if(f.wikiThumb){
-    loadWikiThumb();
-  }else{
-    loadIcon();
-  }
+  // 圖片解析(與標題、影片頁共用同一邏輯，確保一致)
+  resolveFruitImg(f,(r)=>{
+    const pic=b.querySelector('.pic');if(!pic)return;
+    if(r) pic.innerHTML=`<img class="${r.isPhoto?'photo':''}" src="${r.url}" alt="${f.name}">`;
+    // r 為 null 時保留原本 emoji
+  });
   return b;
 }
 FRUITS.forEach((f,i)=>grid.appendChild(makeFruitCard(f,i)));
@@ -352,15 +359,9 @@ function openFruit(i,btn){
   const f=FRUITS[i];
   // 標題 icon
   const head=document.getElementById('mIco');
+  const myTok=reqToken;
   head.innerHTML=`<span>${f.ico}</span>`;
-  const ic=iconImg(f.icon,f.ico,96);
-  const loadHeadIcon=()=>{const im=new Image();im.onload=()=>head.innerHTML=`<img src="${ic.url}" alt="">`;im.onerror=()=>{};im.src=ic.url;};
-  if(f.customImg||f.wikiThumb){
-    const src=f.customImg||null;
-    const useWiki=()=>wikiSummary(f.wiki).then(sm=>{if(sm&&sm.img){const w=new Image();w.onload=()=>head.innerHTML=`<img src="${sm.img}" alt="">`;w.onerror=loadHeadIcon;w.src=sm.img;}else loadHeadIcon();}).catch(loadHeadIcon);
-    if(src){const c=new Image();c.onload=()=>head.innerHTML=`<img src="${src}" alt="">`;c.onerror=()=>{f.wikiThumb?useWiki():loadHeadIcon();};c.src=src;}
-    else useWiki();
-  }else{loadHeadIcon();}
+  resolveFruitImg(f,(r)=>{ if(myTok!==reqToken)return; if(r) head.innerHTML=`<img src="${r.url}" alt="">`; });
   document.getElementById('mName').textContent=f.name;
   document.querySelector('.mhead').style.background=`linear-gradient(120deg,${f.color},#ff8a6e)`;
   switchPanel('quiz');
@@ -424,6 +425,17 @@ function markDone(){
 document.getElementById('retryBtn').addEventListener('click',()=>renderQuiz(FRUITS[current]));
 
 // 相簿
+// 取維基圖片的原始檔名(去掉 /thumb/、尺寸前綴 NNNpx-、查詢參數)，用來判斷是否同一張圖
+function imgKey(u){
+  try{
+    let p=u.split('?')[0];
+    p=p.replace('/thumb/','/');
+    let last=p.substring(p.lastIndexOf('/')+1);
+    last=last.replace(/^\d+px-/,'');      // 去掉 240px- 之類前綴
+    return decodeURIComponent(last).toLowerCase();
+  }catch(e){return u;}
+}
+
 function renderGallery(f){
   const myToken=reqToken;
   const g=document.getElementById('gallery');
@@ -440,9 +452,9 @@ function renderGallery(f){
   Promise.all([wikiSummary(f.wiki),wikiPhotos(f.wiki)]).then(([sum,photos])=>{
     if(myToken!==reqToken) return; // 已切換到別顆水果，放棄
     g.classList.remove('loading');
-    const urls=[];
-    if(sum&&sum.img) urls.push(sum.img);
-    (photos||[]).forEach(p=>{if(!urls.includes(p))urls.push(p);});
+    const urls=[];const seen=new Set();
+    if(sum&&sum.img){urls.push(sum.img);seen.add(imgKey(sum.img));}
+    (photos||[]).forEach(p=>{const k=imgKey(p);if(!seen.has(k)){seen.add(k);urls.push(p);}});
     galImgs=urls.slice(0,6);
     const link=(sum&&sum.link)||`https://zh.wikipedia.org/wiki/${encodeURIComponent(f.wiki)}`;
     if(galImgs.length===0){
@@ -501,9 +513,13 @@ function renderVideo(f){
   const gUrl='https://www.google.com/search?tbm=vid&q='+encodeURIComponent(f.name+' 水果');
   function showNoVid(){
     box.classList.remove('loading');
-    box.innerHTML=`<div class="noVid"><span class="vemoji">${f.ico}</span>這個條目目前沒有現成影片，<br>到影片平台搜尋「${f.name}」看更多吧！</div>`+
-      `<a class="searchBtn" href="${ytUrl}" target="_blank">▶ 在 YouTube 搜尋影片</a>`+
+    const buttons=`<a class="searchBtn" href="${ytUrl}" target="_blank">▶ 在 YouTube 搜尋影片</a>`+
       `<a class="searchBtn g" href="${gUrl}" target="_blank">🔍 Google 影片搜尋</a>`;
+    const tip='這個條目目前沒有現成影片，<br>到影片平台搜尋「'+f.name+'」看更多吧！';
+    const render=(headHtml)=>{box.innerHTML=`<div class="noVid">${headHtml}${tip}</div>`+buttons;};
+    render(`<span class="vemoji">${f.ico}</span>`); // 先放 emoji 保底
+    // 所有水果都用「跟首頁完全一致」的圖
+    resolveFruitImg(f,(r)=>{ if(myToken!==reqToken)return; if(r) render(`<img class="${r.isPhoto?'vimg':'vimg-icon'}" src="${r.url}" alt="${f.name}">`); });
     document.getElementById('vidSrc').innerHTML='點按鈕會開啟新分頁搜尋相關影片';
   }
   wikiVideos(f.wiki).then(vids=>{
